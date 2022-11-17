@@ -42,6 +42,7 @@ def send_data(time, puzzle_level):
 def main():
     won = False
     completed = False
+    time_completed = datetime(1, 1, 1)
 
     while True:
         dt = clock.tick(FPS) / 1000  # Amount of seconds between each loop.
@@ -80,8 +81,21 @@ def main():
             output = screens[globals.active_game_index].Update(dt)
             screens[globals.active_game_index].Render()
 
+            if output != None and output is True:
+                if globals.active_game_index >= len(screens) - 1:
+                    # Completed all the games
+                    time_completed = datetime.now()
+                    time_taken = time_completed - globals.start_time
+
+                    send_data(time_taken.total_seconds(), globals.active_game_index)
+                    won = True
+                    completed = True
+                else:
+                    globals.active_game_index += 1
+
             if globals.active_game_index != 0:
-                time_taken = datetime.now() - globals.start_time
+                time_completed = datetime.now()
+                time_taken = time_completed - globals.start_time
 
                 text = get_font(50).render(str(time_taken)[2:7], 1, (255,255,255))
                 level_text = get_font(50).render(str(globals.active_game_index), 1, (255,255,255))
@@ -91,15 +105,6 @@ def main():
                 if int(time_taken.total_seconds()) >= 60 * 60:
                     completed = True
                     send_data(time_taken.total_seconds(), globals.active_game_index)
-
-            if output != None and output is True:
-                globals.active_game_index += 1
-
-                if globals.active_game_index >= len(screens):
-                    # Completed all the games
-                    send_data(time_taken.total_seconds(), globals.active_game_index)
-                    won = True
-                    completed = True
 
         if won:
             main_screen.fill((0,0,0))
