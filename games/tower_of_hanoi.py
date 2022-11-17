@@ -251,11 +251,8 @@ class TowerOfHanoi(Game):
 
             return True
 
-
-
         if self.currentlyDraggingTile != None:
             self.currentlyDraggingTile.UpdatePosition(pygame.mouse.get_pos())
-
 
 
         return None
@@ -269,22 +266,3 @@ class TowerOfHanoi(Game):
         # Separate rendering for tile being dragged
         if self.currentlyDraggingTile != None:
             self.currentlyDraggingTile.Render()
-
-
-
-    def main(self):
-        clock = pygame.time.Clock()
-
-        while True:
-            dt = clock.tick(FPS) / 1000  # Amount of seconds between each loop.
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-
-            self.main_screen.fill(BLACK)
-
-            self.Update()
-            self.Render()
-
-            pygame.display.update()

@@ -31,7 +31,7 @@ class StartMenu():
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start_button.checkForInput(pygame.mouse.get_pos()):
                 dictToSend = {"hcid": str(self.hc_input_box.text), "password": str(self.password_input_box.text) }
-                res = requests.post(f'{BASE_URL}/login', json=dictToSend)
+                res = requests.post(f'{BASE_URL}/login', json=dictToSend, timeout=5)
                 if res.status_code == 401:
                     # Unauthorized
                     pass

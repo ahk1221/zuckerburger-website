@@ -48,12 +48,11 @@ class InputBox():
 				self.bg_alpha_target = 55.0
 
 		elif event.type == pygame.KEYDOWN and self.is_focused:
-			key = event.key
 
-			if event.key == pygame.K_BACKSPACE and len(self.text) > 0:
-				self.text = self.text[:-1]
-			elif len(self.text) < self.maxCharacters:
+			if event.unicode.isprintable() and len(self.text) < self.maxCharacters:
 				self.text += event.unicode
+			elif event.key == pygame.K_BACKSPACE and len(self.text) > 0:
+				self.text = self.text[:-1]
 
 			if not self.isPassword:
 				self.text_surface = self.font.render(self.text, True, self.text_color)

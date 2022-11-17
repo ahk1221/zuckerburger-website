@@ -34,7 +34,7 @@ def send_data(time, puzzle_level):
         user = pickle.load(f)
 
     dictToSend = {"hcid": str(user), 'time': str(time), 'puzzle_level': str(puzzle_level)}
-    res = requests.post(f'{BASE_URL}/add-shit', json=dictToSend)
+    res = requests.post(f'{BASE_URL}/add-shit', json=dictToSend, timeout=5)
     if res.status_code == 401:
         # Unauthorized
         pass
