@@ -86,14 +86,14 @@ def add_shit():
 
     return jsonify({"msg": "added shit"})
 
-def byTime(user):
+def sortCriteria(user):
     return float(user.time)/float(user.puzzle_level)
 
 @app.route("/scores", methods=["GET"])
 def scores():
     users = User.query.all()
     print(users)
-    users.sort(key=byTime, reverse=True)
+    users.sort(key=sortCriteria, reverse=True)
 
     data = {}
 
