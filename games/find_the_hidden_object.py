@@ -12,6 +12,7 @@ import globals
 AMOUNT_OF_OBJ = 10
 HOVER_OBJ_COLOR = (190, 120, 255)
 OBJ_COLOR = (190, 120, 0)
+bg = pygame.transform.scale(pygame.image.load("assets/images/bg.png"), (1280, 720))
 
 class Object(pygame.sprite.Sprite):
     def __init__(self, groups: list[pygame.sprite.Group], pos: tuple[int, int], scale: tuple[int, int], image_path: str):
@@ -21,7 +22,6 @@ class Object(pygame.sprite.Sprite):
         is `pygame.sprite.Sprite`, and then it sets the image to the image at the image path, scaled to
         the scale, and then it sets the rect to the rect of the image, with the top left corner at the
         position
-
         :param groups: list[pygame.sprite.Group]
         :type groups: list[pygame.sprite.Group]
         :param pos: The position of the sprite
@@ -49,7 +49,6 @@ class Object(pygame.sprite.Sprite):
         """
         If the mouse is hovering over the button, then change the balls color to a lighter shade of
         blue
-
         TODO change the balls color to a lighter shade
         """
         self.isMouseHovering()
@@ -60,7 +59,6 @@ class FindTheHiddenObj(Game):
     def __init__(self, main_screen: pygame.Surface, timer: pygame.time.Clock) -> None:
         """
         This function initializes the game state, and sets up the game
-
         :param main_screen: pygame.Surface = The screen that the game is being played on
         :type main_screen: pygame.Surface
         :param timer: pygame.time.Clock = The timer that is used to keep track of the time
@@ -84,10 +82,18 @@ class FindTheHiddenObj(Game):
 
         self.object_group = pygame.sprite.Group()
         for _ in range(AMOUNT_OF_OBJ):
-            Object([self.object_group], (random.randint(0, 1280), random.randint(0, 720)), (20, 20), "assets/images/ball.png")
+            Object([self.object_group], (random.randint(0, 1280), random.randint(0, 720)), (5, 5), "assets/images/ball.png")
 
         self.timer_string = None
         self.counting_time = None
+
+    def OnEvent(self, event: pygame.event.Event):
+        if event.type == pygame.MOUSEBUTTONUP:
+            for object in self.object_group:
+                position = pygame.mouse.get_pos()
+                if position[0] in range(object.rect.left, object.rect.right) and position[1] in range(object.rect.top, object.rect.bottom):
+                    object.kill()
+
     def Update(self, dt):
         """
         It loops through all the objects in the object group and calls the Update function for each
@@ -95,11 +101,6 @@ class FindTheHiddenObj(Game):
         """
         for object in self.object_group:
             object.Update()
-            position = pygame.mouse.get_pos()
-            if position[0] in range(object.rect.left, object.rect.right) and position[1] in range(object.rect.top, object.rect.bottom):
-                object.kill()
-
-
 
         if len(self.object_group) == 0:
             return True
@@ -113,9 +114,6 @@ class FindTheHiddenObj(Game):
         It takes the image of each object in the object group and blits it to the main screen
         """
 
+        self.main_screen.blit(bg, (0,0))
         for object in self.object_group:
             self.main_screen.blit(object.image, object.rect)
-
-
-
-
