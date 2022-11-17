@@ -8,14 +8,13 @@ from settings import *
 import sys
 import globals
 
-
 TOWER_HEIGHT = 400
 TOWER_WIDTH = 30
 
 TILE_HEIGHT = 30
 TILE_WIDTH = 70
 
-NUM_TILES = 3
+NUM_TILES = 5
 
 TILE_COLOR = (190, 120, 0)
 HOVER_TILE_COLOR = (190, 120, 255)
@@ -51,7 +50,7 @@ class Tower:
             tile.OnEvent(event)
 
     def Update(self, game):
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game.currentlyDraggingTile != None and game.CanMoveTileToTower(game.currentlyDraggingTile, self):
+        if game.currentlyDraggingTile != None and game.CanMoveTileToTower(game.currentlyDraggingTile, self) and self.rect.colliderect(game.currentlyDraggingTile.rect):
             self.color = HOVER_TOWER_COLOR
         else:
             self.color = TOWER_COLOR
@@ -205,7 +204,7 @@ class TowerOfHanoi(Game):
         elif event.type == pygame.MOUSEBUTTONUP and self.currentlyDraggingTile != None:
             # Find the tower the mouse is on
             for tower in self.towers:
-                if tower.rect.collidepoint(pygame.mouse.get_pos()) and self.CanMoveTileToTower(self.currentlyDraggingTile, tower):
+                if tower.rect.colliderect(self.currentlyDraggingTile.rect) and self.CanMoveTileToTower(self.currentlyDraggingTile, tower):
                     self.MoveTileToTower(self.currentlyDraggingTile, tower)
                     break
 
@@ -258,6 +257,14 @@ class TowerOfHanoi(Game):
         return None
 
     def Render(self):
+
+        font = pygame.font.Font('assets/fonts/ARCADE_N.TTF', 35, bold=True)
+        label = font.render('TOWER OF HANOI', 1, (255, 255, 255))  # initialise 'Tetris' text with white
+        self.main_screen.blit(label, label.get_rect(center=(SCREEN_WIDTH / 2, 45)))  # put surface on the center of the window
+
+        font = pygame.font.Font('assets/fonts/ARCADE_N.TTF', 12, bold=True)
+        controls_text = font.render('Drag and drop rings from one tower to another using your mouse!', 1, (255, 255, 255))
+        self.main_screen.blit(controls_text, controls_text.get_rect(center=(SCREEN_WIDTH * 0.5, 45 + label.get_height() + 20)))  # put surface on the center of the window
 
         # Renders all 3 towers and each of its tiles
         for tower in self.towers:

@@ -424,6 +424,7 @@ class Klotski(Game):
         self.timer_string = None
 
     def Draw(self):
+
         board_color = (205, 127, 50)
         text_background = (0, 100, 255)
         text_color = (255, 255, 255)
@@ -431,31 +432,15 @@ class Klotski(Game):
         self.main_screen.fill(darken_color(board_color, 0.5))
         self.board_surf.fill(board_color)
 
-        # Draw the title label onto the window
-        # pygame.draw.rect(self.main_screen, text_background, (TITLE_OFFSETS, TITLE_SIZE))
-        # title_label = main_font.render(f"KLOTSKI PUZZLE", 1, text_color)
-        # self.main_screen.blit(title_label,
-        #          (TITLE_OFFSETS[0] + TITLE_SIZE[0] // 2 - title_label.get_width() // 2,
-        #           TITLE_OFFSETS[1] + TITLE_SIZE[1] // 2 - title_label.get_height() // 2))
-
-        # Draw the steps label onto the window
-        # pygame.draw.rect(self.main_screen, text_background, (SCORE_OFFSETS, SCORE_SIZE))
-        # steps_label = main_font.render(f"Step {self.board.number_of_steps}", 1, text_color)
-        # self.main_screen.blit(steps_label,
-        #         (SCORE_OFFSETS[0] + SCORE_SIZE[0] // 2 - steps_label.get_width() // 2,
-        #          SCORE_OFFSETS[1] + SCORE_SIZE[1] // 2 - steps_label.get_height() // 2))
-
         # Draw the board and copy it onto the window
         self.board.draw(self.board_surf, TILE_SIZE)
         self.main_screen.blit(self.board_surf, BOARD_OFFSETS)
 
-        if self.board.is_solved:
-            # Show the message when game is solved
-            # NOTE: Game does not end when puzzle is solved, user can continue..
-            success_label = main_font.render(f"Congratulations!", 1, text_color)
-            self.main_screen.blit(success_label,
-                     (BOARD_OFFSETS[0] + BOARD_SIZE[0] // 2 - success_label.get_width() // 2,
-                      BOARD_OFFSETS[1] + BOARD_SIZE[1] // 2 - success_label.get_height() // 2))
+        font = pygame.font.Font('assets/fonts/ARCADE_N.TTF', 35, bold=True)
+        label = font.render('KLOTSKI', 1, (255, 255, 255))  # initialise 'Tetris' text with white
+
+        self.main_screen.blit(label, label.get_rect(center=(SCREEN_WIDTH / 2, 45)))  # put surface on the center of the window
+
 
     def handle_select(self, pos):
         # Handles mouse button down event.

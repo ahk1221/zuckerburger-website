@@ -8,6 +8,8 @@ import sys
 from utils import get_font
 import globals
 
+WINNING_SCORE = 10
+
 PURPLE = (140, 19, 251)
 RED = (255, 0, 128)
 TEAL = (53, 226, 242)
@@ -282,7 +284,7 @@ def restart(screen):
     del stars[:]
     del obstacles[:]
     del colorswitches[:]
-    for i in range(5):
+    for i in range(WINNING_SCORE):
         o_type = 0
         if(o_type == 0):
             temp = Obstacle(screen, SCREEN_WIDTH/2, -600*i)
@@ -325,7 +327,7 @@ def draw_game_over(screen):
 
 
 def draw_ui(screen):
-    screen.blit(font.render(str(score), True, WHITE), (10, 10))
+    screen.blit(font.render(str(score), True, WHITE), (SCREEN_WIDTH - 20, 10))
     if(highscore >= 1):
         w = SCREEN_WIDTH/5
         for i in range(6):
@@ -336,12 +338,9 @@ class MainGame(Game):
         super().__init__(main_screen, timer)
         self.timer_string = None
 
-
     def OnEvent(self, event):
         global gamestate
 
-        if score == 5:
-            gamestate = WON
         if(event.type == pygame.QUIT):
             sys.exit(1)
         if(event.type == pygame.KEYDOWN):
@@ -361,11 +360,9 @@ class MainGame(Game):
     def Render(self) -> int:
         self.main_screen.fill((20,20,20))
 
-
         if(gamestate == MENU):
             draw_menu(self.main_screen)
         elif(gamestate == GAMEPLAY):
-
 
             for obstacle in obstacles:
                 if(obstacle.y+obstacle.rad/2-cam.y >= 0 and obstacle.y-obstacle.rad/2-cam.y <= SCREEN_HEIGHT):
@@ -383,14 +380,9 @@ class MainGame(Game):
             draw_game_over(self.main_screen)
 
 
-
-
-
-
-
     def Update(self, dt):
 
-        if (gamestate == WON):
+        if (score == WINNING_SCORE):
             return True
 
         if gamestate == GAMEPLAY:

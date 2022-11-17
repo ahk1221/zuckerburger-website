@@ -20,7 +20,7 @@ tetriminos:
 
 pygame.font.init()
 
-WINNING_SCORE = 10
+WINNING_SCORE = 50
 
 # global variables
 
@@ -32,7 +32,7 @@ play_height = 600  # play window height; 600/20 = 20 height per block
 block_size = 30  # size of block
 
 top_left_x = (SCREEN_WIDTH - play_width) // 2
-top_left_y = SCREEN_HEIGHT - play_height - 50
+top_left_y = (SCREEN_HEIGHT - play_height) // 2
 
 filepath = 'assets/high_scores.ttf'
 fontpath = 'assets/fonts/ARCADE_N.TTF'
@@ -306,14 +306,24 @@ def draw_next_shape(piece, surface):
 
 
 # draws the content of the window
-def draw_window(surface: pygame.Surface, grid, score=0, last_score=0):
+def draw_window(surface: pygame.Surface, grid, score=0):
     surface.fill((0, 0, 0))  # fill the surface with black
 
     pygame.font.init()  # initialise font
-    font = pygame.font.Font(fontpath_mario, 65, bold=True)
+    font = pygame.font.Font(fontpath, 35, bold=True)
     label = font.render('TETRIS', 1, (255, 255, 255))  # initialise 'Tetris' text with white
 
-    surface.blit(label, ((top_left_x + play_width / 2) - (label.get_width() / 2), 30))  # put surface on the center of the window
+    surface.blit(label, label.get_rect(center=(SCREEN_WIDTH / 2, top_left_y - 25)))  # put surface on the center of the window
+
+    # winning score
+    font = pygame.font.Font(fontpath, 17, bold=True)
+    winning_score_text = font.render('Get to ' + str(WINNING_SCORE) + ' score to win!', 1, (255, 255, 255))
+    surface.blit(winning_score_text, winning_score_text.get_rect(center=(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT / 2)))  # put surface on the center of the window
+
+    # controls
+    font = pygame.font.Font(fontpath, 12, bold=True)
+    controls_text = font.render('Use arrow keys to control the piece!', 1, (255, 255, 255))
+    surface.blit(controls_text, controls_text.get_rect(center=(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT / 2 + winning_score_text.get_height() + 20)))  # put surface on the center of the window
 
     # current score
     font = pygame.font.Font(fontpath, 30)
@@ -323,14 +333,6 @@ def draw_window(surface: pygame.Surface, grid, score=0, last_score=0):
     start_y = top_left_y + (play_height / 2 - 100)
 
     surface.blit(label, (start_x, start_y + 200))
-
-    # last score
-    label_hi = font.render('HIGHSCORE   ' + str(last_score), 1, (255, 255, 255))
-
-    start_x_hi = top_left_x - 240
-    start_y_hi = top_left_y + 200
-
-    surface.blit(label_hi, (start_x_hi + 20, start_y_hi + 200))
 
     # draw content of the grid
     for i in range(row):
@@ -350,32 +352,10 @@ def draw_window(surface: pygame.Surface, grid, score=0, last_score=0):
 
     # pygame.display.update()
 
-
-# update the score txt file with high score
-def update_score(new_score):
-    score = get_max_score()
-
-    with open(filepath, 'w') as file:
-        if new_score > score:
-            file.write(str(new_score))
-        else:
-            file.write(str(score))
-
-
-# get the high score from the file
-def get_max_score():
-    with open(filepath, 'r') as file:
-        lines = file.readlines()        # reads all the lines and puts in a list
-        score = int(lines[0].strip())   # remove \n
-
-    return score
-
-
 class Tetris(Game):
     def __init__(self, main_screen: pygame.Surface, timer: pygame.time.Clock):
         super().__init__(main_screen, timer)
         self.Restart()
-
 
     def Restart(self):
         self.run = False
@@ -390,7 +370,7 @@ class Tetris(Game):
         self.fall_speed = 0.35
         self.level_time = 0
         self.score = 0
-        self.last_score = get_max_score()
+        self.last_score = 0
 
     def OnEvent(self, event: pygame.event.Event):
         super().OnEvent(event)
@@ -431,13 +411,14 @@ class Tetris(Game):
 
             if self.lost:
                 draw_text_middle('You Lost', 50, (255, 255, 255), self.main_screen, (0, -100))
-                draw_text_middle('Press any key to try again', 30, (255, 255, 255), self.main_screen)
+                draw_text_middle('Press SPACE to try again', 30, (255, 255, 255), self.main_screen)
             else:
-                draw_text_middle('Press any key to begin', 50, (255, 255, 255), self.main_screen)
+                draw_text_middle('TETRIS', 50, (255, 255, 255), self.main_screen, (0, -100))
+                draw_text_middle('Press SPACE to begin', 30, (255, 255, 255), self.main_screen)
 
             return
 
-        draw_window(self.main_screen, self.grid, self.score, self.last_score)
+        draw_window(self.main_screen, self.grid, self.score)
         draw_next_shape(self.next_piece, self.main_screen)
 
     def Update(self, dt):
@@ -482,7 +463,6 @@ class Tetris(Game):
             self.next_piece = get_shape()
             self.change_piece = False
             self.score += clear_rows(self.grid, self.locked_positions) * 10    # increment score by 10 for every row cleared
-            update_score(self.score)
 
             if self.last_score < self.score:
                 self.last_score = self.score

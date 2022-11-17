@@ -24,7 +24,7 @@ pygame.display.set_caption("Zuckerburger")
 clock = pygame.time.Clock()
 
 startMenuScreen = StartMenu(main_screen, clock)
-screens = [startMenuScreen, Tetris(main_screen, clock), TowerOfHanoi(main_screen, clock), Klotski(main_screen, clock), FindTheHiddenObj(main_screen, clock), games.color_switch.MainGame(main_screen, clock)]
+screens = [startMenuScreen, FindTheHiddenObj(main_screen, clock), TowerOfHanoi(main_screen, clock), Tetris(main_screen, clock), Klotski(main_screen, clock), games.color_switch.MainGame(main_screen, clock)]
 
 defaultFont = get_font(50)
 
@@ -98,9 +98,9 @@ def main():
                 time_taken = time_completed - globals.start_time
 
                 text = get_font(50).render(str(time_taken)[2:7], 1, (255,255,255))
-                level_text = get_font(50).render(str(globals.active_game_index), 1, (255,255,255))
+                level_text = get_font(50).render('Level ' + str(globals.active_game_index), 1, (255,255,255))
                 main_screen.blit(text, (10, 10))
-                main_screen.blit(level_text, (SCREEN_WIDTH//2, 10))
+                main_screen.blit(level_text, (10, text.get_height() + 5))
 
                 if int(time_taken.total_seconds()) >= 60 * 60:
                     completed = True
