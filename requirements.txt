@@ -3,3 +3,5 @@ Flask-Bcrypt
 Flask-Session
 Flask-Cors
 python-dotenv
+pandas 
+requests
