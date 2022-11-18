@@ -20,7 +20,7 @@ tetriminos:
 
 pygame.font.init()
 
-WINNING_SCORE = 50
+WINNING_SCORE = 30
 
 # global variables
 
@@ -424,6 +424,10 @@ class Tetris(Game):
     def Update(self, dt):
         super().Update(dt)
 
+        if self.score >= WINNING_SCORE:
+            # Won
+            return True
+
         # need to constantly make new grid as locked positions always change
         self.grid = create_grid(self.locked_positions)
 
@@ -468,10 +472,6 @@ class Tetris(Game):
                 self.last_score = self.score
 
         if check_lost(self.locked_positions):
-            if self.score >= WINNING_SCORE:
-                # Won
-                return True
-
             # Lost, restart the game
             self.Restart()
             self.lost = True
