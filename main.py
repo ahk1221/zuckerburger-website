@@ -24,7 +24,7 @@ pygame.display.set_caption("Zuckerburger")
 clock = pygame.time.Clock()
 
 startMenuScreen = StartMenu(main_screen, clock)
-screens = [startMenuScreen, FindTheHiddenObj(main_screen, clock), TowerOfHanoi(main_screen, clock), Tetris(main_screen, clock), Klotski(main_screen, clock), games.color_switch.MainGame(main_screen, clock)]
+screens = [startMenuScreen, FindTheHiddenObj(main_screen, clock), Tetris(main_screen, clock), Klotski(main_screen, clock), games.color_switch.MainGame(main_screen, clock), TowerOfHanoi(main_screen, clock)]
 
 defaultFont = get_font(50)
 
@@ -59,21 +59,7 @@ def main():
 
                 # active_game_index += 1
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
-                    globals.active_game_index += 1
-                    globals.start_time = datetime.now()
-                    print(globals.start_time)
-                if event.key == pygame.K_o:
-                    globals.active_game_index += 1
 
-                    if globals.active_game_index >= len(screens):
-                        # Completed all the games
-                        won = True
-                        completed = True
-
-                    print(globals.start_time)
-                #pass
 
         main_screen.fill(BLACK)
 

@@ -82,7 +82,7 @@ class FindTheHiddenObj(Game):
 
         self.object_group = pygame.sprite.Group()
         for _ in range(AMOUNT_OF_OBJ):
-            Object([self.object_group], (random.randint(0, 1280), random.randint(0, 720)), (5, 5), "assets/images/ball.png")
+            Object([self.object_group], (random.randint(100, 1180), random.randint(100, 620)), (6, 6), "assets/images/ball.png")
 
         self.timer_string = None
         self.counting_time = None

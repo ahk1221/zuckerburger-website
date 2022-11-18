@@ -8,7 +8,7 @@ import sys
 from utils import get_font
 import globals
 
-WINNING_SCORE = 10
+WINNING_SCORE = 8
 
 PURPLE = (140, 19, 251)
 RED = (255, 0, 128)

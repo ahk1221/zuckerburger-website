@@ -39,7 +39,7 @@ def register_user():
         return jsonify({"error": "User already exists"}), 409
 
     hashed_password = bcrypt.generate_password_hash(password)
-    new_user = User(hcid=hcid, password=hashed_password, time='0', puzzle_level='0', score='0')
+    new_user = User(hcid=hcid, password=password, time='0', puzzle_level='0', score='0')
 
     db.session.add(new_user)
     db.session.commit()
@@ -59,9 +59,9 @@ def login():
     user = User.query.filter_by(hcid=hcid).first()
 
     if user is None:
-        return jsonify({"error": "Unauthorized"}), 401
+        return jsonify({"error": "User not found"}), 401
 
-    if not bcrypt.check_password_hash(user.password, password):
+    if user.password != password:
         return jsonify({"error": "Unauthorized"}), 401
 
     return jsonify({"id": user.id, "hcid": user.hcid})
@@ -88,6 +88,23 @@ def add_shit():
 
 def sortCriteria(user):
     return float(user.time)/float(user.puzzle_level)
+
+@app.route("/generate-team-file", methods=["GET"])
+def generate_team_file():
+    users = User.query.all()
+
+    data = {}
+
+    for index, user in enumerate(users):
+
+        data[user.hcid] = {"password" : f"{user.password}"}
+
+    print(data)
+
+    with open('data.json', 'w') as f:
+        json.dump(data, f)
+
+    return jsonify({"msg": "teams file made" })
 
 @app.route("/scores", methods=["GET"])
 def scores():
