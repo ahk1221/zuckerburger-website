@@ -87,7 +87,14 @@ def add_shit():
     return jsonify({"msg": "added shit"})
 
 def sortCriteria(user):
-    return float(user.time)/float(user.puzzle_level)
+    result = 0
+
+    try:
+        result = float(user.time)/float(user.puzzle_level)
+    except ZeroDivisionError:
+        result = 0
+
+    return result
 
 @app.route("/generate-team-file", methods=["GET"])
 def generate_team_file():
@@ -113,12 +120,18 @@ def scores():
     users.sort(key=sortCriteria, reverse=True)
 
     data = {}
-
+    count = 0
     for index, user in enumerate(users):
+        if float(user.puzzle_level) == 0:
+            continue
+        m = -0.057
+        time = float(user.time)
+        score = (m * (time - 373.0)) + 150
+        count += 1
+        data[user.hcid] = {"score" : f"{score}", "puzzle_level": f"{user.puzzle_level}", "time": f"{user.time}"}
 
-        data[user.hcid] = {"score" : f"{index*1.25}"}
 
-    print(data)
+    print(count)
 
     with open('scores.json', 'w') as f:
         json.dump(data, f)

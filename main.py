@@ -59,6 +59,10 @@ def main():
 
                 # active_game_index += 1
 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_o:
+                    globals.active_game_index += 1
+
 
 
         main_screen.fill(BLACK)
