@@ -15,4 +15,5 @@ def add_teams():
 def dump_data():
     res = requests.get('http://132.147.169.218:5000/generate-team-file')
 
+add_teams()
 dump_data()
